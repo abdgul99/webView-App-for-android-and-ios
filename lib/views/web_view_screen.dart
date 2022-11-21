@@ -49,7 +49,7 @@ class _WebScreenState extends State<WebScreen> {
             icon: const Icon(Icons.arrow_back)),
         elevation: 0.0,
         backgroundColor: const Color(0xff40404F),
-        title: const Text('Insidegist Blog'),
+        title: const Text('Swevy'),
         centerTitle: true,
         actions: [
           IconButton(
