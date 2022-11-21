@@ -1,12 +1,8 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:toast/toast.dart';
-
-import '../components/ad_widget.dart';
 
 class WebScreen extends StatefulWidget {
   const WebScreen({Key? key}) : super(key: key);
