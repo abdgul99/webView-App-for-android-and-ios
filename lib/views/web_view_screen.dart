@@ -13,6 +13,7 @@ class WebScreen extends StatefulWidget {
 
 class _WebScreenState extends State<WebScreen> {
   late WebViewController controller;
+  bool error = false;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   double progress = 0;
@@ -27,6 +28,21 @@ class _WebScreenState extends State<WebScreen> {
 
   void showToast(String msg, {int? duration, int? gravity}) {
     Toast.show(msg, duration: duration, gravity: gravity);
+  }
+
+  getInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          error = false;
+        });
+      }
+    } on SocketException catch (_) {
+      setState(() {
+        error = true;
+      });
+    }
   }
 
   // This widget is the root of your application.
@@ -82,16 +98,21 @@ class _WebScreenState extends State<WebScreen> {
               children: [
                 Expanded(
                   child: Opacity(
-                    opacity: progressPercent == 100 || progressPercent == 0
+                    opacity: progressPercent == 100 && error == false ||
+                            progressPercent == 0 && error == false
                         ? 1.0
                         : 0.0,
+                    //webview
                     child: WebView(
                       javascriptMode: JavascriptMode.unrestricted,
                       //https://insidegistblog.com/
                       initialUrl: 'https://insidegistblog.com/',
                       onWebViewCreated: (controller) {
                         this.controller = controller;
+                        getInternetConnection();
                       },
+                      onPageStarted: (url) => getInternetConnection(),
+                      onWebResourceError: ((weberror) {}),
                       gestureNavigationEnabled: true,
                       debuggingEnabled: true,
                       onProgress: (progress) {
@@ -105,6 +126,15 @@ class _WebScreenState extends State<WebScreen> {
                 ),
               ],
             ),
+            //error
+            progressPercent == 100 && error == true ||
+                    progressPercent == 0 && error == true
+                ? const Text(
+                    "Please Check Your Internet Connection",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )
+                : const SizedBox(),
+            //loading indecator
             progressPercent != 100 && progressPercent != 0
                 ? SizedBox(
                     height: 150,
